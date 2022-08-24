@@ -9,7 +9,7 @@ function LoginForm({ existingUser }) {
     event.preventDefault();
 
     try {
-      await FirebaseAuthService.registerUser(username, password);
+      await FirebaseAuthService.loginUser(username, password);
       setUsername("");
       setPassword("");
     } catch (error) {
@@ -19,6 +19,20 @@ function LoginForm({ existingUser }) {
 
   function handleLogout() {
     FirebaseAuthService.logoutUser();
+  }
+
+  async function handleSendResetPasswordEmail() {
+    if (!username) {
+      alert("Missing username!");
+      return;
+    }
+
+    try {
+      await FirebaseAuthService.sendPasswordResetEmail(username);
+      alert("sent the password reset email");
+    } catch (error) {
+      alert(error.message);
+    }
   }
 
   return (
@@ -57,7 +71,14 @@ function LoginForm({ existingUser }) {
             />
           </label>
           <div className="button-box">
-            <button className="primary-button">Submit</button>
+            <button className="primary-button">Login</button>
+            <button
+              type="button"
+              onClick={handleSendResetPasswordEmail}
+              className="primary-button"
+            >
+              Reset Password
+            </button>
           </div>
         </form>
       )}
